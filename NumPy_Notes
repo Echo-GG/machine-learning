@@ -1,0 +1,929 @@
+import numpy as np
+
+#1.1数据类型
+#创建整形数组
+arr1 = np.array([1,2,3])
+print(arr1)
+#创建浮点型数组
+arr2 = np.array([1.0,2,3])
+print(arr2)
+# 同化定理
+arr1[0] = 100.9
+print(arr1)
+arr2[1] = 10
+print(arr2)
+print("--------")
+# 共同改变定理
+arr1 = arr1.astype(float)
+print(arr1)
+arr2 = arr2.astype(int)
+print(arr2)
+
+#整数型与浮点型的运算
+arr = np.array([1,2,3])
+print(arr)
+print(arr+0.0)
+print(arr*1.0)
+print(arr/1)
+print(arr//1)
+
+arr_int = np.array([1,2,3])
+arr_float = np.array([1.0,2,3])
+print(arr_int+arr_float)
+#整数型数组很好升级，而浮点型数组很难降级
+
+print("--------")
+
+
+
+
+
+
+
+#1.2数组维度
+arr1 = np.ones(3)
+print(arr1)
+arr2 = np.ones((1,3))
+print(arr2)
+arr3 = np.ones((1,1,3))
+print(arr3)
+print("--------")
+print(arr1.shape)
+print(arr2.shape)
+print(arr3.shape)
+#数组的拼接函数需要两个数组是同维度的
+
+#不同维度数组之间的转换
+#升维
+#创建一维数组
+arr1 = np.arange(10)
+print(arr1)
+#转换为二维数组
+arr2 = arr1.reshape((1,10))
+print(arr2)
+#第一个参数已确定的情况下,另一个参数设为-1即可,表示根据第一个参数自动计算另一个参数
+#e.g.1*10/1=10
+arr2 = arr1.reshape((1,-1))
+print(arr2)
+#降维
+#创建二维数组
+arr2 = np.arange(10).reshape(2,5)#创建一个从0到9的一维数组,再将它的形状重塑为2行5列
+print(arr2)
+#转换为一维数组
+arr1 = arr2.reshape(10)
+print(arr1)
+#同样的,也可以将一个参数设为-1
+# e.g.2*5/1=10
+arr1 = arr2.reshape(-1)
+print(arr1)
+#规定:将一维数组称为向量,将二维数组称为矩阵
+
+print("--------")
+
+
+
+
+
+
+#数组的创建
+#2.1 创建指定的数组
+#当明确知道数组每一个元素的具体数值时，可以使用np.array()函数,将python列表转化为numpy数组
+#创建一维数组(向量)
+arr1 = np.array([1,2,3])
+print(arr1)
+#创建二维数组(行矩阵)
+arr2 = np.array([[1,2,3]])
+print(arr2)
+#创建二维数组(列矩阵)##列矩阵相当消耗内存
+arr3 = np.array([[1],[2],[3]])
+print(arr3)
+#创建二维数组(矩阵)
+arr4 = np.array([[1,2,3],[4,5,6]])
+print(arr4)
+print("--------")
+
+
+
+
+
+
+
+#2.2创建递增数组
+arr1 = np.arange(10)#从0开始到10之前结束
+print(arr1)
+arr2 = np.arange(10,20)#从10开始到20之前结束
+print(arr2)
+arr3 = np.arange(1,21,2)#从1开始到21之前结束,步长为2
+print(arr3)
+print("--------")
+#如果想创建浮点数组
+#法一
+arr1 = np.arange(10.0)
+print(arr1)
+arr2 = np.arange(10,20.0)
+print(arr2)
+arr3 = np.arange(1,21,2.0)
+print(arr3)
+#法二
+arr1 = 1.0*np.arange(10)
+print(arr1)
+arr2 = 0.0+np.arange(10)
+arr3 = 1.0*np.arange(1,21,2)
+print(arr3)
+print("--------")
+
+
+
+
+
+
+
+
+
+#2.3创建同值数组
+#需要创建同值数组时,使用np.zeros()函数以及np.ones()函数,如示例。
+#全0数组
+arr1 = np.zeros(3)#形状为3的向量
+print(arr1)
+arr1 = arr1.astype(int)
+print(arr1)
+#全1数组
+arr2 = np.ones((1,3))#形状为(1,3)的矩阵
+print(arr2)
+arr2 = arr2.astype(int)
+print(arr2)
+#全3.14数组
+arr3 = 3.14*np.ones((2,3))#形状为(2,3)的矩阵
+print(arr3)
+arr3 = arr3.astype(int)
+print(arr3)
+#注我们使用这种方法创建的等值数组,默认数据类型为浮点型(防止后续插入数据或运算时出现精度问题(数据被截断))
+print("--------")
+
+
+
+
+
+
+
+
+
+#2.4创建随机数组
+#有时需要创建随机数组,那么可以使用np.random系列函数,如示例所示
+#0-1均匀分布的浮点型随机数组
+arr1 = np.random.random(5)#形状为5的向量
+print(arr1)
+print("--------")
+#创建60-100范围内均匀分布的3行3列随机数组
+arr1 = 60 + (100-60)*np.random.random((3,3))
+print(arr1)
+#整数型随机数组
+arr2 = np.random.randint(10,100,(1,15))#形状为(1,15)的矩阵,元素值在10-100之间
+print(arr2)
+#Another realization
+arr2 = 90*np.random.random((1,15))+10
+arr2 = arr2.astype(int)
+#运算顺序很重要
+arr2 = (90*np.random.random((1,15))).astype(int)+10
+print(arr2)
+#Wrong example
+arr2 = 90*(np.random.random((1,15)).astype(int))+10
+#np.random.random((1,15)).astype(int)会全部变为0
+#故而arr2的值全部为10
+print(arr2)
+#服从正态分布的随机数组
+arr3 = np.random.normal(0,1,(2,3))#形状为(2,3)的矩阵,均值为0,标准差为1
+print(arr3)
+#若要创建的数组恰服从标准正态分布(均值为0,标准差为1),则可使用np.random.randn()函数
+arr4 = np.random.randn(4,5)#形状为(4,5)的矩阵
+print(arr4)
+print('--------')
+
+
+
+
+
+
+
+
+#3.1访问数组元素
+arr1 = np.arange(1,10)
+print(arr1)
+#访问元素
+print(arr1[3])#正着访问
+print(arr1[-1])#倒着访问
+#修改数组元素
+arr1[3]=100
+print(arr1)
+
+#访问矩阵
+#创建矩阵
+arr2 = np.array([[1,2,3],[4,5,6]])
+print(arr2)
+#访问元素
+print(arr2[0,2])
+print(arr2[1,-2])
+#修改元素
+arr2[1,1] = 100.9
+print(arr2)
+#浮点数100.9插入到整数型数组时被截断了
+print('-------')
+
+
+
+
+
+
+
+
+
+#3.2花式索引(Fancy Indexing)
+#向量的花式索引
+arr1 = np.arange(0,90,10)
+print(arr1)
+#花式索引
+print(arr1[[0,2]])
+#矩阵的花式索引
+#创建矩阵
+arr2 = np.arange(1,17).reshape(4,4)
+print(arr2)
+#花式索引
+print(arr2[[0,1],[0,1]])#访问(0,0)和(1,1)位置的元素
+print(arr2[[0,1,2],[2,1,0]])#访问(0,2),(1,1)和(2,0)位置的元素
+#修改数组元素
+arr2[[0,1,2,3],[3,2,1,0]] = 100#将(0,3),(1,2),(2,1)和(3,0)位置的元素修改为100
+print(arr2)
+#根据以上实例,花式索引也就是用向量来替代普通索引的行列元素,且花式索引输出的仍然是一个向量。
+#普通索引用一层中括号。花式索引用两层中括号。
+print('-------')
+
+
+
+
+
+
+
+
+
+
+#3.3访问数组切片
+#向量的切片
+#向量与列表切片的操作完全一致
+#索引负责指向区域的右侧一个单元格
+arr1 = np.arange(10)
+print(arr1)
+#当明确知道从第x个元素切到第y个元素:
+print(arr1[1:4])#从索引[1]开始,切到索引[4]之前
+print(arr1[1:])#从索引[1]开始,切到结尾
+print(arr1[:4])#从数组开头开始,切到索引[4]之前
+#当明确切除数组的开头与结尾:
+print(arr1)
+print(arr1[2:-2])#切除开头两个元素与结尾两个元素
+print(arr1[2:])#切除开头两个元素
+print(arr1[:-2])#切除结尾两个元素
+#当明确隔几个元素采样一次时
+print(arr1)
+print(arr1[::2])#每2个元素采样一次
+print(arr1[::3])#每3个元素采样一次
+print(arr1[1:-1:2])#切除一头一尾后,每2个元素采样一次
+#矩阵的切片
+arr2 = np.arange(1,21).reshape(4,5)
+print(arr2)
+print(arr2[1:3,1:-1])
+#取矩阵的第1行到第2行,第1列到倒数第2列
+print(arr2[::3,::2])#跳跃采样
+#取矩阵的第0行和第3行,第0列,第2列和第4列
+#提取矩阵的行
+#基于矩阵的切片功能,我们可以提取其部分行
+arr3 = np.arange(1,21).reshape(4,5)
+print(arr3)
+print(arr3[2,:])#提取第2行
+print(arr3[1:3,:])#提取1至2行
+#考虑代码的简洁性,当提取矩阵的某几行时可简写(但提取列的时候不可简写)
+print(arr3[2,:])#规范的提取行
+print(arr3[2])#简便的提取行
+#提取矩阵的列
+arr4 = np.arange(1,21).reshape(4,5)
+print(arr4)
+print(arr4[:,2])#提取第2列(注意,输出的是向量)
+print(arr4[:,1:3])#提取1至2列(注意,输出的仍然是矩阵)
+#将向量转化为列矩阵
+arr5 = np.arange(1,16).reshape(3,5)
+print(arr5)
+cut = arr5[:,2]#提取第2列为列向量
+#法一:
+cut = cut.reshape((1,-1))#升级为矩阵
+#同:cut = cut.reshape((1,3))
+print(cut)
+#通过转置操作将此时的行矩阵转置为欲求的列矩阵
+print(cut.T)#转置操作.T只对矩阵有用
+#法二:
+cut = cut.reshape((-1,1))#直接将向量升级为列矩阵
+print(cut)
+#the same result
+print('------')
+
+
+
+
+
+
+
+
+
+
+#3.4数组切片仅是视图
+#与Python列表和Matlab不同,NumPy数组的切片仅仅是原数组的一个视图。换言之,NumPy切片并不会创建新的变量。
+#e.g.
+arr = np.arange(10)
+print(arr)
+cut = arr[:3]#创建arr的切片cut
+print(cut)
+cut[0]=100#对切片的值进行修改
+print(cut)#切片的值被修改
+print(arr)#原数组的值也被修改
+#这一设定是为了减少内存的开销
+#深度学习中为节省内存,经常使用切片操作来处理数据
+#即使用:arr[:]=<表达式>来替代arr=<表达式>。
+
+#备份切片为新变量
+#如果真的需要为切片创建新变量(In rare cases)，使用.copy()方法。
+#e.g.
+arr = np.arange(10)
+print(arr)
+copy = arr[:3].copy()#创建arr的切片copy
+print(copy)
+copy[0]=100#对切片的值进行修改
+print(copy)#切片的值被修改
+print(arr)#原数组的值未被修改
+print('-------')
+
+
+
+
+
+
+
+
+
+
+#3.5 数组赋值仅是绑定
+#与NumPy数组的切片一样,NumPy数组完整的赋值给另一个数组,也只是绑定。换言之,NumPy数组之间的赋值并不会创建新的变量:
+#e.g.
+arr1 = np.arange(10)
+print(arr1)
+arr2 = arr1#将arr1赋值给arr2
+print(arr2)
+arr2[0]=100#对arr2的值进行修改
+print(arr2)#arr2的值被修改
+print(arr1)#arr1的值也被修改
+#conclusion:NumPy数组之间的赋值仅是绑定,并不会创建新的变量。
+#此特性的出现仍然是为了节省内存开销。
+#solu:
+#复制数组为新变量
+#如果真的需要赋给一个新数组,使用.copy()方法。
+#e.g.
+arr1 = np.arange(10)
+print(arr1)
+arr2 = arr1.copy()
+print(arr2)
+arr2[0]=100#对arr2的值进行修改
+print(arr2)#arr2的值被修改
+print(arr1)#arr1的值未被修改
+print('-------')
+
+
+
+
+
+
+
+#4.1数组的转置
+#数组的转置方法为.T只对矩阵有效,因此遇到向量要先将其转化为矩阵。
+#不能直接对向量专职,因为向量没有行列之分,转置无意义。
+#一定要先将向量升级为矩阵,再进行转置操作。(是对二维数组进行转置操作)
+#相关语句示例:
+#arr = np.arange(3)
+#arr = arr.reshape((1,-1))#升级为矩阵(将行向量升级为行矩阵)
+#arr = arr.T#行矩阵的转置
+#arr = np.arange(3)
+# arr = arr.reshape((-1,1))#将向量升级为列矩阵
+#arr = arr.T#列矩阵的转置
+# (1)向量的转置
+arr1 = np.arange(1,4)
+print(arr1)
+arr2 = arr1.reshape((1,-1))#升级为矩阵
+print(arr2)
+arr3 = arr2.T#行矩阵的转置
+print(arr3)
+# (2)矩阵的转置
+#行矩阵的转置见上,列矩阵的转置如下:
+arr1 = np.arange(3).reshape(3,1)#创建列矩阵
+print(arr1)
+arr2 = arr1.T#列矩阵的转置
+print(arr2)
+#一般矩阵的转置如下:
+arr1 = np.arange(4).reshape(2,2)
+print(arr1)
+arr2 = arr1.T
+print(arr2)
+print('-------')
+
+
+
+
+
+
+
+#4.2数组的翻转
+#两种翻转数组的方法；
+#1.上下翻转的np.fliqud()函数(up-down)
+#2.左右翻转的np.fliplr()函数(left-right))
+
+#在数学中,向量并不是横着排的,而是竖着排的
+#故在翻转向量时,我们应该使用上下翻转函数np.flipud()
+#(1)向量的翻转
+arr1 = np.arange(10)
+print(arr1)
+#翻转向量
+arr_ud = np.flipud(arr1)
+print(arr_ud)
+#创建矩阵
+arr2 = np.arange(1,21).reshape(4,5)
+print(arr2)
+#左右翻转
+arr_lr = np.fliplr(arr2)
+print(arr_lr)
+#上下翻转
+arr_ud = np.flipud(arr2)
+print(arr_ud)
+print('-------')
+
+
+
+
+
+
+
+
+#4.3数组的重塑
+#想要重塑数组的形状,需要用到.reshape()方法。
+#(1)向量的变形
+arr1 = np.arange(1,10)#创建向量
+print(arr1)
+arr2 = arr1.reshape(3,3)
+print(arr2)
+#(2)矩阵的变形
+arr1 = np.array([[1,2,3],[4,5,6]])
+print(arr1)
+arr2 = arr1.reshape(-1)
+#arr2=arr1.reshape(6)
+print(arr2)
+arr3 = arr1.reshape(1,-1)
+#arr3=arr1.reshape(1,6)
+print(arr3)
+print('------')
+
+
+
+
+
+
+
+
+#4.4数组的拼接
+# (1) 向量的拼接
+#两个向量拼接,将得到一个新的加长版向量
+arr1 = np.array([1,2,3])
+print(arr1)
+arr2 = np.array([4,5,6])
+print(arr2)
+#拼接
+arr3 = np.concatenate([arr1,arr2])
+print(arr3)
+#(2) 矩阵的拼接
+#创建数组1
+arr1 = np.array([[1,2,3],[4,5,6]])
+print(arr1)
+#创建数组2
+arr2 = np.array([[7,8,9],[10,11,12]])
+print(arr2)
+#按第一个维度(行)拼接
+arr3 = np.concatenate([arr1,arr2],axis=0)#默认参数axis=0
+print(arr3)
+#按第二个维度(列)拼接
+arr4 = np.concatenate([arr1,arr2],axis=1)
+print(arr4)
+#最后要说明的是,向量和矩阵不能进行拼接,必须先把向量升级为行矩阵.
+print('-------')
+
+
+
+
+
+
+
+
+
+#4.5数组的分裂
+# (1) 向量的分裂
+#向量分裂将得到若干个更短的向量
+#创建向量
+arr = np.arange(10,100,10)
+print(arr)
+#分裂数组
+arr1,arr2,arr3=np.split(arr,[2,8])
+#np.split()函数中,给出的第二个参数[2,8]表示在索引[2]和索引[8]的位置截断。
+#arr1:前2个元素;arr2:第3至8个元素;arr3:第9个元素到结尾
+#位置2砍一刀,位置8砍一刀(start with index 0）
+print(arr1)
+print(arr2)
+print(arr3)
+#矩阵的分裂
+#创建矩阵
+arr = np.arange(1,9).reshape(2,4)
+print(arr)
+#按第一个维度(行)分裂
+arr1,arr2 = np.split(arr,[1],axis = 0)#默认参数axis=0
+print(arr1,'\n\n',arr2)#注意输出的是矩阵
+#输出的是一个单独的元组
+#按第二个维度(列)分裂
+arr1,arr2,arr3 = np.split(arr,[1,3],axis = 1)
+print(arr1,'\n\n',arr2,'\n\n',arr3)#注意输出的是矩阵
+#输出的是一个单独的元组
+print('-------')
+
+
+
+
+
+
+
+#5.1数组与系数之间的运算
+#这里仅以矩阵为例,向量与系数的操作与之相同
+arr = np.arange(1,9).reshape(2,4)
+print(arr)
+print(arr+10)#加法
+print(arr-10)#减法
+print(arr*10)#乘法
+print(arr/10)#除法
+print(arr//3)#整除
+print(arr**2)#幂运算
+print(arr%3)#取模运算
+print('-------')
+
+
+
+
+
+
+
+
+#5.2数组与数组之间的运算
+#同维度数组间的运算即对应元素之间的运算,这里仅以矩阵为例,向量与向量的操作与之相同。
+#创建数组
+arr1 = np.arange(-1,-9,-1).reshape(2,4)
+print(arr1)
+arr2 = -arr1
+print(arr2)
+print(arr1+arr2)#加法
+print(arr1-arr2)#减法
+print(arr1*arr2)#乘法
+#本例中,乘法是遵循对应元素相乘的,可称之为"逐元素乘积"
+#那么如何实现线性代数中的“矩阵级乘法”呢？6.1中会介绍相关函数。
+print(arr1/arr2)#除法
+print(arr1**arr2)#幂方
+print('-------')
+
+
+
+
+
+
+
+#5.3 广播(数组的广播机制)
+#5.2是同形状数组之间的逐元素运算,此处主要讨论不同形状的数组之间的运算。
+#仅讨论二维及以下情形的数组,不同形状的数组之间的运算有以下规则:
+#(1)如果是向量与矩阵之间做运算,向量自动升级为行矩阵
+#(2)如果某矩阵是行矩阵或列矩阵,则其被广播,以适配另一个矩阵的形状。
+#(3)如果两个矩阵的行数或列数相等,则不进行广播。
+#(4)如果两个矩阵的行数或列数不相等,且其中一个矩阵的行数或列数为1,则该矩阵沿着该维度进行广播。
+#(5)如果两个矩阵的行数或列数不相等,且其中一个矩阵的行数或列数不为1,则报错。
+#(6)广播是临时的,不会改变原数组的形状。
+
+#(1)向量被广播
+#当一个形状为(x,y)的矩阵与一个向量做运算时,要求该向量的形状必须为y,运算时向量会自动升级成形状(1,y)的行矩阵,该形状为(1,y)的行矩阵再自动被广播为
+#形状为(x,y)的矩阵,这样就与另一个矩阵的形状适配了。
+#向量
+arr1 = np.array([-100,0,100])
+print(arr1)
+#矩阵
+arr2 = np.random.random((10,3))
+print(arr2)
+#广播
+print(arr1*arr2)
+#(2)列矩阵被广播
+#当一个形状为(x,y)的矩阵与一个列矩阵做运算时,要求该列矩阵的形状必须为(x,1),该形状为(x,1)的列矩阵再自动被被广播为形状为(x,y)的矩阵,这样就与另一个矩阵的形状适配了。
+#列矩阵
+arr1 = np.arange(3).reshape(3,1)
+print(arr1)
+#矩阵
+arr2 = np.ones((3,5))
+print(arr2)
+#广播
+print(arr1*arr2)
+#（3）行矩阵与列矩阵同时被广播
+#当一个形状为(x,y)的矩阵与一个行矩阵和一个形状为(x,1)的列矩阵做运算时,这俩矩阵都会被自动广播为形状为(x,y)的矩阵,这样就互相适配了。
+arr1 = np.arange(3)
+#此处arr1为向量,会自动升级为行矩阵
+#也可以写成arr1 = np.arange(3).reshape(1,3)或np.arange(3).reshape((1,-1))
+print(arr1)
+arr2 = np.arange(3).reshape(3,1)
+print(arr2)
+print(arr1*arr2)
+print('------')
+
+
+
+
+
+
+
+
+
+
+#6.1矩阵乘积
+#先前提到的arr1*arr2是逐元素乘积,那么如何实现线性代数中的矩阵乘积呢？
+#使用np.dot()函数或@运算符。
+#当矩阵乘积中混有向量时,根据需要,其可充当列矩阵,但混有向量时输出结果必为向量。
+#(1)向量与向量的乘积
+arr1 = np.arange(5)
+arr2 = np.arange(5)
+print(arr1)
+print(arr2)
+print(np.dot(arr1,arr2))
+print(arr1*arr2)
+#(2)向量与矩阵的乘积
+arr1 = np.arange(5)
+arr2 = np.arange(15).reshape(5,3)
+print(arr1)
+print(arr2)
+#矩阵乘积
+print(np.dot(arr1,arr2))
+#(3)矩阵与向量的乘积
+#创建数组
+arr1 = np.arange(15).reshape(3,5)
+arr2 = np.arange(5)
+print(arr1)
+print(arr2)
+print(np.dot(arr1,arr2))
+#(4)矩阵与矩阵的乘积
+#创建数组1
+arr1 = np.arange(10).reshape(5,2)
+print(arr1)
+#创建数组2
+arr2 = np.arange(16).reshape(2,8)
+print(arr2)
+# #矩阵乘积
+print(np.dot(arr1,arr2))
+print('-------')
+
+
+
+
+
+
+
+
+#6.2数学函数
+#绝对值函数
+arr_v = np.array([-10,0,10])
+abs_v = np.abs(arr_v)
+print(arr_v)
+print(abs_v)
+#三角函数
+theta = np.arange(3)*np.pi/2
+sin_v = np.sin(theta)
+cos_v = np.cos(theta)
+tan_v = np.tan(theta)
+print("theta:",theta)
+print("sin:",sin_v)
+print("cos:",cos_v)
+print("tan:",tan_v)
+#指数函数
+x = np.arange(1,4)
+print('x   = ',x)
+print('e^x = ',np.exp(x))
+print('2^x = ',2**x)
+print('10^x = ',10**x)
+#对数函数
+x = np.array([1,10,100,1000])
+print('x        = ',x)
+print('ln(x)    = ',np.log(x))#自然对数
+print('log2(x)  = ',np.log2(x))#以2为底
+#print('log2(x)  = ',np.log(x)/np.log(2)）
+print('log10(x) = ',np.log10(x))#以10为底
+#print('log10(x) = ',np.log(x)/np.log(10)）
+print('-------')
+
+
+
+
+
+
+
+
+
+
+#6.3聚合函数
+#最大值函数np.max()与最小值函数np.min()
+arr = np.random.random((2,3))
+print(arr)
+print('按维度一求最大值:',np.max(arr,axis=0))#按维度一求最大值
+print('按维度二求最大值:',np.max(arr,axis=1))#按维度二求最大值
+print('整体求最大值:',np.max(arr))#整体求最大值
+#求和函数np.sum()与求积函数np.prod()
+arr = np.arange(10).reshape(2,5)
+print(arr)
+print('按维度一求和:',np.sum(arr,axis=0))#按维度一求和
+print('按维度二求和:',np.sum(arr,axis=1))#按维度二求和
+print('整体求和:',np.sum(arr))#整体求和
+#均值函数np.mean()与标准差函数np.std()
+arr = np.arange(10).reshape(2,5)
+print(arr)
+print('按维度一求平均: ',np.mean(arr,axis=0))
+print('按维度二求平均: ',np.mean(arr,axis=1))
+print('整体求平均: ',np.mean(arr))
+print('按维度一求标准差: ',np.std(arr,axis=0))
+print('按维度二求标准差: ',np.std(arr,axis=1))
+print('整体求标准差: ',np.std(arr))
+print('-------')
+#当axis = 0时,表示按列操作,最终结果与每一行的元素个数一致;当axis = 1时,表示按行操作,最终结果与每一列的元素个数一致。
+#考虑到大型数组难免有缺失值,以上聚合函数碰到缺失值时会报错,因此出现了聚合函数的安全版本,即计算时忽略缺失值。
+#如np.nansum()、np.nanprod、np.nanmean()、np.nanstd()、np.nanmax()、np.nanmin()等。
+#NAN(nan)(not a number)表示“不是一个数字”,是浮点型数据中的缺失值标记。
+#e.g.在计算10个数的平均值时,如果其中有一个数缺失,则使用np.mean()函数会报错,而使用np.nanmean()函数则会忽略该缺失值,计算其余9个数的平均值。
+
+
+
+
+
+
+
+
+
+
+#7.1创建布尔型数组
+#由于NumPy的主要数据类型是整数型数组或浮点型数组,因此布尔型数组的产生离不开:大于>、大于等于>=、等于==、不等号!=、小于<=、小于<等比较运算符。
+#首先,我们将数组与系数作比较,以产生布尔型数组。
+#创建数组
+arr = np.arange(1,7).reshape(2,3)
+print(arr)
+#数组与数字作比较
+print(arr>=4)
+#其次,我们将同维数组作比较,以产生布尔型数组。
+#创建同维数组
+arr1 = np.arange(1,6)
+arr2 = np.flipud(arr1)
+print(arr1)
+print(arr2)
+#同维度数组作比较
+print(arr1>arr2)
+#最后,还可以同时比较多个条件。
+# Python基础里,同时检查多个条件使用的与、或、非是and、or、not。
+#但在NumPy中,与、或、非分别使用&、|、~
+#创建数组
+arr = np.arange(1,10)
+print(arr)
+#同时检查多个条件
+print((arr<4)|(arr>6))
+print('-------')
+
+
+
+
+
+
+
+
+
+
+
+
+#7.2布尔型数组中True的数量
+#有三个关于True数量的有用函数,分别是np.sum()、np.any()、np.all()。
+# np.sum()函数:统计布尔型数组里True的个数。
+#创建一个形状为10000的标准正态分布数组
+arr = np.random.normal(0,1,10000)
+#统计该分布中绝对值小于1的元素个数
+num = np.sum(np.abs(arr)<1)
+print(num)
+#np.abs(arr)<1可以替换为(arr>-1)&(arr<1)。此外,最终统计的数量为6807(每次运行结果会有所不同),其概率近似为0.6827,这符合统计学中的3σ原则。
+# np.any()函数:检查布尔型数组中是否存在True。
+#只要布尔型数组里含有一个及其以上的True,则返回True;否则返回False。
+#创建同维数组
+arr1 = np.arange(1,10)
+arr2 = np.flipud(arr1)
+print(arr1)
+print(arr2)
+#统计这两个数组里是否含有共同元素
+print(np.any(arr1==arr2))
+#从结果来看,arr1与arr2里含有共同元素,那就是5。
+#np.all()函数:当布尔型数组里全是True时,才返回True:
+arr = np.random.normal(500,70,100000)
+#判断是否所有考生的分数都高于250
+print(np.all(arr>250))
+#从结果来看,尽管3σ准则告诉我们又99.73%的考生成绩高于290分(μ-3σ)(290通过500-3×70计算得到),但仍然有最终成绩低于250分的裸考者。
+print('-------')
+
+
+
+
+
+
+
+
+
+
+#7.3布尔型数组作为掩码
+#若一个普通数组和一个布尔型数组的维度相同,可以将布尔型数组作为普通数组的掩码,这样可以对普通数组中的元素作筛选。
+#创建数组
+arr = np.arange(1,13).reshape(3,4)
+print(arr)
+#数组与数字作比较,产生布尔型数组
+print(arr>4)
+#筛选出arr>4的元素
+print(arr[arr>4])
+#注意,这个矩阵进行掩码操作后,退化为了向量。
+
+#筛选出数组逐元素比较的结果
+#创建同维数组
+arr1 = np.arange(1,10)
+arr2 = np.flipud(arr1)
+print(arr1)
+print(arr2)
+#同维数组作比较
+print(arr1>arr2)
+#筛选出arr1>arr2位置上的元素
+print(arr1[arr1>arr2])
+print(arr2[arr1>arr2])#即arr2[arr2<arr1]
+#从结果来看,arr1与arr2里满足arr1>arr2的元素
+print('-------')
+
+
+
+
+
+
+
+
+
+
+#7.4满足条件的元素所在位置
+#现在我们来思考一种情况:假设有一个很长的数组,我想知道满足某个条件的元素们所在的索引位置,此时使用np.where()函数。
+arr = np.random.normal(500,70,1000)
+print(np.where(arr>650))#寻找数组中大于650的元素所在的位置
+print(np.where(arr==np.max(arr)))#寻找数组中最大值所在的位置
+#np.where()函数返回的是一个元组,元组中包含一个数组,该数组存储了满足条件的元素的索引位置。
+print('-------')
+
+
+
+
+
+
+
+
+
+
+
+
+#8.1数组与张量
+#NumPy和PyTorch的基础语法几乎一致,具体表现为:
+# (1)np对应torch
+# (2)数组array对应张量tensor
+# (3)NumPy的n维数组对应着PyTorch的n阶张量
+#数组与张量之间可以相互转换:
+# 数组arr转为张量ts: ts = torch.tensor(arr)
+# 张量ts转为数组arr: arr = np.array(ts)
+
+
+
+##The difference between numpy and pytorch:
+  # Unit             NumPy            PyTorch            用法区别
+# 1.1 数据类型    .astype()            .type()              无
+# 2.4 随机数组   np.random.random()    torch.rand()         无
+#              np.random.randint()   torch.randint()    不接纳向量
+#              np.random.normal()     torch.normal()    不接纳向量
+#             np.random.randn()      torch.randn()
+#3.4 数组切片     .copy()             .clone()              无
+#4.4 数组拼接   np.concatenate()     torch.cat()            无
+#4.5 数组分裂   np.split()          torch.split()        参数含义优化
+#6.1 矩阵乘积   np.dot()             torch.matmul()         无
+#             np.dot(v,v)           torch.dot()           无
+#             np.dot(m,v)         torch.mv()              无
+#             np.dot(m,m)         torch.mm()              无
+#6.2 数学函数   np.exp()            torch.exp()          必须传入张量
+#             np.log()            torch.log()          必须传入张量
+#6.3 聚合函数   np.mean()           torch.mean()       必须传入浮点型数组
+#             np.std()            torch.std()        必须传入浮点型数组
