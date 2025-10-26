@@ -1,0 +1,647 @@
+import pandas as pd
+import numpy as np
+import torch
+#1.1 一维对象的创建
+#创建字典
+dict_v = {'a':0,'b':0.25,'c':0.5,'d':0.75,'e':1.0}
+print(dict_v)
+#用字典创建对象
+sr = pd.Series(dict_v)
+print(sr)
+#数组创建法
+#最直接的创建方法即直接给pd.Series()函数参数,其需要两个参数。
+#第一个参数是值values(列表、数组、张量均可),第二个参数是键index(索引)
+
+#用列表创建对象(测试列表)
+v = [0,0.25,0.5,0.75,1.0]
+k = ['a','b','c','d','e']
+#键值创建法
+sr = pd.Series(v,k)
+print(sr)
+#其中,参数index可以省略,省略后索引即从0开始的顺序数字。
+
+#先定义键与值(测试数组)
+v = np.array([0,0.25,0.5,0.75,1.0])
+k = ['a','b','c','d','e']
+sr = pd.Series(v,k) # the same
+#sr = pd.Series(v,index = k)
+print(sr)
+
+#先定义键与值(测试张量)
+v = torch.tensor([0,0.25,0.5,0.75,1])
+k = ['a','b','c','d','e']
+#用列表创建对象
+sr = pd.Series(v,k)
+print(sr)
+
+
+#1.2 一维对象的属性
+# Series对象有两个属性:values与index
+#用数组创建sr
+v = np.array([53,64,72,82])
+k = ['1号','2号','3号','4号']
+sr = pd.Series(v,index = k)
+print(sr)
+print(sr.values)
+print(sr.index)
+# In fact, 无论是用列表、数组还是张量来创建对象,最终values均为数组。
+#用张量创建sr
+v = torch.tensor([53,64,72,82])
+k = ['1号','2号','3号','4号']
+sr = pd.Series(v,index = k)
+print(sr)
+#comment:
+#虽然Pandas对象的第一个参数values可以传入列表、数组与张量,但传进去后默认的存储方式是NumPy数组。
+#这一点更加提醒我们,Pandas是建立在NumPy基础上的库,没有NumPy数组库就没有Pandas数据处理库。
+#当想要Pandas退化为NumPy时,查看其values属性即可。
+
+
+#1.3 二维对象的创建
+#二维对象将面向矩阵,其不仅有行标签index,还有列标签columns。
+#(1)字典创建法
+#用字典创建二维对象时,必须基于多个Series对象,每一个Series就是一列数据,相当于对一列一列的数据作拼接。
+#创建Series对象时,字典的键是index,其延展方向是竖直方向;
+#创建DaraFrame对象时,字典的键是columns,其延展方向是水平方向。
+
+#创建sr1:各个病人的年龄
+v1 = [53,64,72,82]
+i = ['1号','2号','3号','4号']
+sr1 = pd.Series(v1,index = i)
+print(sr1)
+
+#创建sr2:各个病人的性别
+v2 = ['女','男','男','女']
+i = ['1号','2号','3号','4号']
+sr2 = pd.Series(v2,index = i)
+
+#当两个sr对象有相同的index参数时,创建df对象时,会自动合并index
+print(sr2)
+
+#创建df对象
+df = pd.DataFrame({'年龄':sr1,'性别':sr2})
+print(df)
+
+# 如果sr1和sr2的index不完全一致,那么二维对象的index会取sr1与sr2的index的交集,相应的,该对象就会产生一定数量的缺失值(NaN)
+
+sr2 = pd.Series(v2,) # e.g.1
+df = pd.DataFrame({'年龄':sr1,'性别':sr2})
+print(df)
+
+v2 = ['女','男','男','女']
+i = ['1号','2号','3号','6号']
+sr2 = pd.Series(v2,index = i)
+df = pd.DataFrame({'年龄':sr1,'性别':sr2})
+print(df)
+
+#(2)数组创建法
+#最直接的创建方法即直接给pd.DataFrame()函数参数,其需要三个参数。第一个参数是值values(数组),第二个参数是行标签index,第三个参数是列标签columns。
+#其中,index和columns参数可以省略,省略后index即从0开始的顺序数字,columns即从0开始的顺序数字。
+#设定键值
+v = np.array([[53,'女'],[64,'男'],[72,'男'],[82,'女']])
+# 数组只能容纳一种变量类型,因此上面的数组v中,数字都被转换成了字符串类型。于是v就是一个字符串型数组。
+print(v)
+i = ['1号','2号','3号','4号']
+c = ['年龄','性别']
+#键值创建法
+df = pd.DataFrame(v,index=i,columns=c)
+print(df)
+
+
+
+#1.4 二维对象的属性
+# DataFrame对象有三个属性:values、index与columns
+# 设定键值
+v = [[53,'女'],[64,'男'],[72,'男'],[82,'女']]
+i = ['1号','2号','3号','4号']
+c = ['年龄','性别']
+# 数组创建法
+df = pd.DataFrame(v,index = i,columns = c)
+print(df)
+print(df.values)
+print(df.index)
+print(df.columns)
+#comment:当想要Pandas退化为NumPy时,查看其values属性即可。
+#提取完整的数组
+arr = df.values
+print(arr)
+#提取第[0]列,并转化为一个整数型数组
+arr = arr[:,0].astype(int)
+print(arr)
+
+
+
+
+
+
+#在学习Pandas的索引之前,需要知道:
+#Pandas的索引分为显式索引与隐式索引。显式索引是使用Pandas对象提供的索引，而隐式索引是使用数组本身自带的从0开始的索引。
+#现假设某演示代码中的索引是整数,这个时候显式索引和隐式索引可能会出乱子。于是,Pandas作者发明了索引器loc(显式)与iloc(隐式),手动告诉程序自己这句话是显式索引还是隐式索引。
+# 2.1 一维对象的索引
+#(1)访问元素
+v = [53,64,72,82]
+k = ['1号','2号','3号','4号']
+sr = pd.Series(v,index = k)
+print(sr)
+#访问元素
+print(sr.loc['3号'])  #显式索引
+print(sr['3号'])     #等同于显式索引
+#花式索引
+print(sr.loc[['1号','3号']])
+print(sr[['1号','3号']])
+#修改元素
+sr.loc['3号'] = 100
+sr['3号'] = 100
+print(sr)
+
+#创建sr
+v = [53,64,72,82]
+k = ['1号','2号','3号','4号']
+sr = pd.Series(v,index = k)
+#访问元素
+print(sr.iloc[2])
+#花式索引
+print(sr.iloc[[0,2]])
+#修改元素
+sr.iloc[[0,2]] = 100
+print(sr)
+
+
+#(2)访问切片
+#使用显式索引时,'1号':'3号'可以涵盖最后一个'3号',但隐式与之前一样
+#创建sr
+v = [53,64,72,82]
+k = ['1号','2号','3号','4号']
+sr = pd.Series(v,index = k)
+print(sr)
+#访问切片
+print(sr.loc['1号':'3号'])  #显式索引:包含最后一个
+print(sr.iloc[0:3]) #隐式索引:不包含最后一个
+#切片仅是视图
+cut = sr['1号':'3号']
+cut['1号']=100
+print(sr)
+#对象赋值仅是绑定
+cut = sr
+cut['3号']=200
+print(sr)
+print(cut)
+# 若想创建新变量,与NumPy一样,使用.copy()方法即可。如果去掉.loc和.iloc,此时NumPy中的索引语法完全一致。
+
+
+#2.2 二维对象的索引
+#在二维对象中,索引器不能去掉,否则会报错,因此必须适应索引器的存在。
+#(1)访问元素
+#字典创建法
+i = ['1号','2号','3号','4号']
+v1 = [53,64,72,82]
+v2 = ['女','男','男','女']
+sr1 = pd.Series(v1,index = i)
+sr2 = pd.Series(v2,index = i)
+df = pd.DataFrame({'年龄':sr1,'性别':sr2})
+print(df)
+# (2)访问切片
+# 数组创建法
+v = np.array([[53,'女'],[64,'男'],[72,'男'],[82,'女']])
+i = ['1号','2号','3号','4号']
+c = ['年龄','性别']
+df = pd.DataFrame(v,index = i,columns = c)
+print(df)
+# 访问切片
+print(df.loc['2号':'3号','年龄'])  #显式索引:
+# 提取二维对象的行
+print(df.loc['3号',:]) #显式索引:
+# 提取矩阵对象的列
+print(df.loc[:,'年龄']) #显式索引:
+
+#切片
+print(df.iloc[0:3,0])
+#提取二维对象的行
+print(df.iloc[2,:])
+#提取矩阵对象的列
+print(df.iloc[:,0])
+
+#在显式索引中,提取矩阵的行或列还有一种简便写法,即:
+# (1) 提取二维对象的行:df.loc['3号'](原理是省略后面的冒号,隐式也可以)
+# (2) 提取二维对象的列: df['年龄'](原理是列标签本身就是二维对象的键)
+print(df.loc['3号'])
+print(df['年龄'])
+
+
+# 对象的变形
+# 3.1 对象的转置
+# Sometimes, the provided big data is not in the desired shape. In such cases, we may need to transpose the data.
+# 创建畸形df
+v = np.array([[53,64,72,82],
+              ['女','男','男','女']])
+i = ['年龄','性别']
+c = ['1号','2号','3号','4号']
+df = pd.DataFrame(v,index = i,columns = c)
+print(df)
+# 转置df
+df = df.T
+print(df)
+
+#3.2 对象的翻转
+#紧接上面的例子,对Pandas对象进行左右翻转与上下翻转.
+# 左右翻转(交换列)
+df = df.iloc[:,::-1] # 自动计算列
+print(df)
+#上下翻转(交换行)
+df = df.iloc[::-1,:] #自动计算行
+print(df)
+#上下左右翻转
+df = df.iloc[::-1,::-1] #自动计算行与列
+print(df)
+
+# 3.3 对象的重塑
+# 考虑到对象是含有行列标签的, .reshape()已不再适用,因此对象的重塑没有那么灵活。但可以做到将sr并入df,也可以将df割出sr。
+# 数组法创建sr
+i = ['1号','2号','3号','4号']
+v1 = [10,20,30,40]
+v2 = ['女','男','男','女']
+v3 = [1,2,3,4]
+sr1 = pd.Series(v1,index = i)
+sr2 = pd.Series(v2,index = i)
+sr3 = pd.Series(v3,index = i)
+print(sr1)
+print(sr2)
+print(sr3)
+
+#字典创建df
+df = pd.DataFrame({'年龄':sr1,'性别':sr2})
+print(df)
+#将sr并入df
+df['牌照'] = sr3
+print(df)
+sr4 = df['年龄']
+print(sr4)
+
+
+
+
+
+# 3.4 对象的拼接
+# Pandas中有一个pd.concat()函数.与np.concatenate()函数语法相似。
+# 一维对象的合并
+v1 = [10,20,30,40]
+v2 = [40,50,60]
+k1 = ['1号','2号','3号','4号']
+k2 = ['4号','5号','6号']
+sr1 = pd.Series(v1,index = k1)
+sr2 = pd.Series(v2,index = k2)
+print(sr1)
+print(sr2)
+#合并
+print(pd.concat([sr1,sr2]))
+# 一维对象与二维对象的合并
+# 一维对象与二维对象的合并,即可理解为:给二维对象加入一列或者一行。因此,不必使用pd.concat()函数。
+# 首先,创建好二维对象
+v1 = [10,20,30]
+v2 = ['女','男','男']
+sr1 = pd.Series(v1,index = ['1号','2号','3号'])
+sr2 = pd.Series(v2,index = ['1号','2号','3号'])
+print(sr1)
+print(sr2)
+df = pd.DataFrame({'年龄':sr1,'性别':sr2})
+print(df)
+#其次,为二维对象加上一列特征,可以是列表、数组、张量或一维对象
+# 加上一列
+df['牌照'] = [1,2,3]
+print(df)
+
+# 最后,为二维对象加上一行个体,可以是列表、数组、张量或一维对象。
+# 加上一行
+df.loc['4号'] = [40,'女',4]
+print(df)
+
+# 二维对象的合并
+# 二维对象合并仍然用pd.concat()函数,不过其多了一个axis参数。
+# 设定df1、df2、df3
+v1 = [[10,'女'],[20,'男'],[30,'男'],[40,'女']]
+v2 = [[1,'是'],[2,'否'],[3,'是'],[4,'否']]
+v3 = [[50,'男',5,'是'],[60,'女',6,'是']]
+i1 = ['1号','2号','3号','4号']
+i2 = ['1号','2号','3号','4号']
+i3 = ['5号','6号']
+c1 = ['年龄','性别']
+c2 = ['牌照','ikun']
+c3 = ['年龄','性别','牌照','ikun']
+df1 = pd.DataFrame(v1,index = i1,columns = c1)
+df2 = pd.DataFrame(v2,index = i2,columns = c2)
+df3 = pd.DataFrame(v3,index = i3,columns = c3)
+print(df1)
+print(df2)
+print(df3)
+df = pd.concat([df1,df2],axis=1) #按列合并(添加列特征)
+print(df)
+df = pd.concat([df,df3],axis=0) #按行合并(添加行个体)
+print(df)
+
+
+
+
+
+
+
+
+
+# 4.1对象与系数之间的运算
+# 下列演示代码中,左侧为一维对象,右侧为二维对象。
+# 创建sr
+sr = pd.Series([53,64,72],index = ['1号','2号','3号'])
+print(sr)
+# 创建df
+v = [[53,'女'],[64,'男'],[72,'男']]
+df = pd.DataFrame(v,index = ['1号','2号','3号'],columns = ['年龄','性别'])
+print(df)
+df['年龄'] = df['年龄'] + 10
+print(df)
+df['年龄'] = df['年龄'] * 10
+print(df.values)
+df['年龄'] = df['年龄'] **2
+print(df['年龄'])
+
+# 4.2 对象与对象之间的运算
+# 对象做运算,必须保证其都是数字型对象,两个对象之间的维度可以不同。
+# (1) 一维对象之间的运算
+# 创建sr1
+v1 = [10,20,30,40]
+k1 = ['1号','2号','3号','4号']
+sr1 = pd.Series(v1,index = k1)
+print(sr1)
+
+# 创建sr2
+v2 = [1,2,3]
+k2 = ['1号','2号','3号']
+sr2 = pd.Series(v2,index = k2)
+print(sr2)
+print(sr1+sr2)
+print(sr1-sr2)
+print(sr1*sr2)
+print(sr1/sr2)
+print(sr1**sr2)
+
+
+
+# (2) 二维对象之间的运算
+# 设定df1和df2
+v1 = [[10,'女'],[20,'男'],[30,'男'],[40,'女']]
+v2 = [1,2,3,6]
+i1 = ['1号','2号','3号','4号'];c1 = ['年龄','性别']
+i2 = ['1号','2号','3号','6号']; c2 = ['牌照']
+df1 = pd.DataFrame(v1,index = i1,columns = c1)
+df2 = pd.DataFrame(v2,index = i2,columns = c2)
+print(df1)
+print(df2)
+df1['加法'] = df1['年龄'] + df2['牌照']
+print(df1)
+df1['减法'] = df1['年龄'] - df2['牌照']
+print(df1)
+df1['乘法'] = df1['年龄'] * df2['牌照']
+print(df1)
+df1['除法'] = df1['年龄'] / df2['牌照']
+print(df1)
+df1['幂方'] = df1['年龄'] ** df2['牌照']
+print(df1)
+
+# 使用np.abs()、np.cos()、np.exp()、np.log()等数学函数时,会保留索引;
+# Pandas中仍然存在布尔型对象,用法与NumPy无异,会保留索引。
+
+# e.g.
+# NumPy数学函数
+#数组创建法
+v = [[53,'女'],[64,'男'],[72,'男'],[82,'女']]
+i = ['1号','2号','3号','4号']
+c = ['年龄','性别']
+df = pd.DataFrame(v,index = i,columns = c)
+print(df)
+print(df['年龄'])
+print(np.cos(df['年龄']))
+df['年龄'] = np.cos(df['年龄'])
+print(df)
+
+# Pandas布尔型对象
+#数组创建法
+v = [[53,'女'],[64,'男'],[72,'男'],[82,'女']]
+i = ['1号','2号','3号','4号']
+c = ['年龄','性别']
+df = pd.DataFrame(v,index = i,columns = c)
+print(df)
+
+
+
+
+
+
+
+
+
+
+
+
+# 5.1 发现缺失值
+# Pandas中缺失值用NaN表示,其全称是Not a Number
+# 发现缺失值使用.isnull()方法
+# 创建sr
+v = [53,None,72,82]
+k = ['1号','2号','3号','4号']
+sr = pd.Series(v,index = k)
+print(sr)
+print(sr.isnull()) #发现缺失值:如果是缺失值(None)则为True,否则为False
+# 创建df
+v = [[None,1],[64,None],[72,3],[82,4]]
+i = ['1号','2号','3号','4号']
+c = ['年龄','牌照']
+df = pd.DataFrame(v,index = i,columns = c)
+print(df)
+print(df.isnull()) #发现缺失值:如果是缺失值(None)则为True,否则为False
+# 除了.isnull()方法,还有.notnull()方法,其功能与.isnull()方法相反。
+# 可以通过在开头加上~符号来实现.notnull()方法的功能。
+#e.g.
+print(~sr.isnull())
+print(~df.isnull())
+#comment:
+"""
+ sr 通常指 pandas.Series（一维），df 通常指 pandas.DataFrame（二维）。
+Series：一维标签化数组，有 index，元素通常为同一 dtype。
+DataFrame：二维表格，既有行索引 index 又有列索引 columns，每列是一个 Series，不同列可以有不同的 dtype。 
+ """
+# print(df.shape)
+
+
+# 5.2 剔除缺失值
+# 剔除缺失值使用.dropna()方法,一维对象很好剔除;二维对象比较复杂,
+# 要么单独剔除df中含有缺失值的行,要么单独剔除df中含有缺失值的列。
+# 创建sr
+v = [53,None,72,82]
+k = ['1号','2号','3号','4号']
+sr = pd.Series(v,index = k)
+print(sr)
+print(sr.dropna()) #剔除缺失值
+# 创建df
+v = [[None,1],[64,None],[72,3],[82,4]]
+i = ['1号','2号','3号','4号']
+c = ['年龄','牌照']
+df = pd.DataFrame(v,index = i,columns = c)
+print(df)
+print(df.dropna(axis=0)) #剔除含有缺失值的行
+print(df.dropna(axis=1)) #剔除含有缺失值的列
+# 可以设定一个参数,只有当该行全部是NaN时,才剔除该行;或者只有当该列全部是NaN时,才剔除该列。
+# e.g.
+# 剔除df全是NaN的个体
+print(df.dropna(how='all'))
+# 也可以设定一个参数,只有当该行或该列的非NaN数量少于某个值时,才剔除该行或该列。
+# e.g.
+# 剔除df非NaN数量少于2的个体
+df['新列'] = [5,None,None,8]
+print(df)
+print(df.dropna(thresh=2))# 剔除df非NaN数量少于2的个体
+
+
+# 5.3 填充缺失值
+# 填充缺失值使用.fillna()方法,可以用一个具体的数值来填充,也可以用均值、中位数或众数来填充。
+# 实际的数据填充没有统一的方法,很灵活。
+# (1) 一维对象
+# 创建sr
+v = [53,None,72,82]
+k = ['1号','2号','3号','4号']
+sr = pd.Series(v,index = k)
+print(sr)
+# 用具体数值填充缺失值
+# e.g. 用常数0填充
+print(sr.fillna(0))
+# e.g. 用均值填充
+mean_value = sr.mean()
+print(sr.fillna(mean_value))
+# or written as:
+# sr = sr.fillna(np.mean(sr))
+# print(sr) # the same, but sr has been changed.
+# 用中位数填充
+median_value = sr.median()
+print(sr.fillna(median_value))
+# 用众数填充
+mode_value = sr.mode()[0] # mode()方法返回的是一个Series对象,因此要取第一个元素(对应下标0,1,2)
+print(sr.fillna(mode_value))
+# 用前值填充
+print(sr.ffill())
+# 用后值填充
+print(sr.bfill())
+
+# 6.1 创建Excel文件
+# 首先,创建Excel文件,录入信息,第一列为index,第一行为columns。
+# 如果你的数据没有index和columns,也即你只是想导入一个数组,那么也请先补上行列标签,后续用
+# .values属性就能将二维对象转换为数组。
+# 接着,将其另存为CSV文件:
+# 无视之后弹出的"工作簿的部分功能丢失",csv没有Excel功能多。这个过程,表格的信息不会丢失,大可放心。
+# 6.2 放入项目文件夹
+# 将刚刚另存为的CSV文件放置Jupyter的当前文件夹(不一定是默认路径)。
+# e.g. 进入Pandas_learning文件夹,将CSV文件放置其中。
+# 6.3 导入Excel信息
+# 导入Pandas对象
+"""
+df = pd.read_csv('Data.csv',index_col=0) # index_col=0表示第一列为index
+print(df)
+# 提取纯数组
+arr = df.values
+print(arr)
+"""
+
+# 7.1 导入信息
+# 首先,准备好Excel数据表格
+# 发现没有行标签,因此需要在最左侧快速填充一列顺序数字
+# 接着参考Chapter6中提到的方法,将Excel文件另存为CSV文件,并放置在当前项目文件夹中。
+
+# 导入Pandas 对象
+# df = pd.read_csv('行星数据.csv',index_col = 0)
+# print(df)
+# 减少冗余输出
+# print(df.head())
+
+# 7.2 聚合方法
+# 在输出df时,对其使用.head=()方法,使其仅输出前五行
+# 导入Pandas 对象
+# df = pd.read_csv('行星数据.csv',index_col = 0)
+# print(df.head())
+
+# NumPy中所有的聚合函数对Pandas对象均适用,且会保留索引。
+# 此外,Pandas将这些函数变更为"对象的方法",这样,即便不导入NumPy也可使用。
+
+# e.g.
+# 最大值函数 np.max()
+# print(df.max())
+# 最小值函数 np.min()
+# print(df.min())
+# 求和函数 np.sum()
+# print(df.sum())
+# 平均值函数 np.mean()
+# print(df.mean())
+# 中位数函数 np.median()
+# print(df.median())
+# 标准差函数 np.std()
+# print(df.std())
+# 方差函数 np.var()
+# print(df.var())
+
+# 7.3 描述方法
+# 在数据分析中.用以上方法挨个查看未免太过麻烦,可以使用.describe()方法直接查看所有聚合函数的信息.
+# e.g.
+# 导入Pandas 对象
+# df = pd.read_csv('行星数据.csv',index_col = 0)
+# print(df.describe())
+# (details ignored)
+
+# 7.4 数据透视
+# (1) 两个特征内的数据透视
+# 数据透视,对数据分析来讲十分重要。
+# 现以泰坦尼克号的生还数据为例,以"是否生还"特征为考察的核心(或者说是神经网络的输出),研究其他特征(输入)与之的关系:
+# 导入Pandas 对象
+# df = pd.read_csv('Titanic.csv',index_col = 0)
+# print(df.head())
+# 一个特征:性别
+# df = df.pivot_table('是否生还',index='性别')
+# print(df)
+# # 两个特征:性别、船舱等级
+# df = df.pivot_table('是否生还',index='性别',columns='船舱等级')
+# print(df)
+
+# 在上述示例中,数据透视表中的数值默认是输出特征"是否生还"的均值(mean),行标签和列标签变成了其他的输入特征。
+# 值得注意的是,pivot_table()方法有一个很重要的参数: aggfunc,其默认值是'mean'，除此以外,所有的聚合函数‘max'、’min'、'sum'。'count'均可使用。
+# 显然,对于这里的"是否生还"来说,'mean'就是最好的选择,其刚好为概率。
+
+# 重置年龄列
+# age = pd.cut(df['年龄'],[0,25,120]) # 以25岁为分水岭
+# print(age)
+# 三个特征:性别、船舱等级、年龄段
+# df = df.pivot_table('是否生还',index=['性别',age],columns='船舱等级')
+# print(df)
+# 重置费用列
+# fare = pd.qcut(df['费用'],2) # 将费用自动分为两部分,use pd.qcut(,) here.
+# print(fare)
+# 四个特征:性别、船舱等级、年龄、费用
+# df = df.pivot_table('是否生还',columns=['性别',age],index=[ '船舱等级',fare])
+# print(df)
+#comment:
+# pivot_table()方法的功能十分强大,可以实现多维度的数据透视
+# pd.cut()函数需要手动设置分割点,在本例中也可以设置为[0,18,60,120]。
+# pd.qcut()函数可自动分割,如果需要分割成3部分,可以设置为3.
+# 注:本例中只演示了4个特征,理论上可以继续在pivot_table()的index或columns的列表参数里添加其他特征,但不宜添加太多,否则数据透视表会变得过于庞杂,不便于观察。
+
+
+
+
+
+
+
+
+# # 7.1 创建布尔型数组(Mentioned in Numpy1.py)
+# # Pandas中的布尔型对象与NumPy中的布尔型数组类似,
+# # 由于NumPy的主要数据类型是整数型或浮点型数组,因此布尔型数组的产生离不开:大于>、大于等于>=、等于==、不等号!=、小于<、小于等于<=。
+# # 首先,我们将数组与系数作比较,以产生布尔型数组。
+# # 创建数组
+# arr = np.arange(1,7).reshape(2,3)
+# print(arr)
+# # 数组与数字作比较
+# print(arr>=4)
+# print((df['年龄']>60)&(df['年龄']<80))
+# print(np.sum((df['年龄']>60)&(df['年龄']<80)))
+# print(df[df['年龄']>60]) #会筛选出结果为True的行
